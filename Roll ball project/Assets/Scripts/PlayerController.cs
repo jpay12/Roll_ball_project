@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem; 
+using TMPro; 
 
 public class PlayerController : MonoBehaviour
-{
+{ 
     // Create public variables for player speed, and for the Text UI game objects
-    public float speed;
+    public float speed = 0;
     public TextMeshProUGUI countText;
     public GameObject winTextObject;
 
     private Rigidbody rb;
     private int count; 
-
     private float movementX;
     private float movementY;
 
@@ -21,12 +21,9 @@ public class PlayerController : MonoBehaviour
     {
         // Assign the Rigidbody component to our private rb variable
        rb = GetComponent<Rigidbody>(); 
-
-       // Set the count to zero
        count = 0; 
+
        SetCountText (); 
-       // Set the text property of the Win Text UI to an empty string, making the 'You Win' (game over message) blank 
-       winTextObject.SetActive(false); 
     }
 
     void OnMove(InputValue movementValue)
@@ -36,7 +33,11 @@ public class PlayerController : MonoBehaviour
         movementX = movementVector.x; 
         movementY = movementVector.y; 
     }
-
+  
+    void SetCountText()
+    {
+		countText.text = "Count: " + count.ToString();
+    }
 
     void FixedUpdate() 
     {
@@ -47,42 +48,19 @@ public class PlayerController : MonoBehaviour
         rb.AddForce(movement * speed); 
 
     }
+ 
 
     private void OnTriggerEnter(Collider other)
     {
         //..and if the GameObject you intersect has the tag 'Pick Up' assigned to it..
        if (other.gameObject.CompareTag("PickUp"))
        {
-           other.gameObject.SetActive(false);
-            // Add one to the score variable 'count'
+           other.gameObject.SetActive(false); 
             count = count + 1;
 
             // Run the 'SetCountText()' function
+    
             SetCountText(); 
        } 
-
-          void OnMove(InputValue value)
-        {
-        	Vector2 v = value.Get<Vector2>();
-
-        	movementX = v.x;
-        	movementY = v.y;
-        }
-
-        void SetCountText()
-	{
-		countText.text = "Count: " + count.ToString();
-
-		if (count >= 12) 
-		{
-                    // Set the text value of your 'winText'
-                    winTextObject.SetActive(true);
-		}
-	}
-
-
-
-
-
-
-}
+    }
+}  
